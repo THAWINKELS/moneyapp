@@ -215,7 +215,7 @@ TEAM_TEMPLATE = """
             <input type="number" name="payment" step="0.01" placeholder="Zet betaling klaar" class="w-full px-4 py-2 mb-2 border rounded-xl">
             <button name="action" value="set_payment" class="bg-blue-500 text-white px-4 py-2 rounded-xl hover:bg-blue-600 w-full">💳 Zet betaling klaar</button>
         </form>
-        {% if payment_amount %}
+        {% if payment_amount != 0 %}
         <div class="mt-4 text-center">
             <a href="{{ url_for('pay_page', team_number=team_number) }}" class="text-blue-600 underline">➡ Betaal €{{ '%.2f' | format(payment_amount) }}</a>
         </div>
@@ -345,7 +345,7 @@ TEAM_TEMPLATE = """
             <input type="number" name="payment" step="0.01" placeholder="Zet betaling klaar" class="w-full px-4 py-2 mb-2 border rounded-xl">
             <button name="action" value="set_payment" class="bg-blue-500 text-white px-4 py-2 rounded-xl hover:bg-blue-600 w-full">💳 Zet betaling klaar</button>
         </form>
-        {% if payment_amount %}
+        {% if payment_amount != 0 %}
         <div class="mt-4 text-center">
             <a href="{{ url_for('pay_page', team_number=team_number) }}" class="text-blue-600 underline">➡ Betaal €{{ '%.2f' | format(payment_amount) }}</a>
         </div>
@@ -380,8 +380,7 @@ def team_page(team_number):
         if action in ['deposit', 'withdraw']:
             try:
                 amount = float(request.form.get('amount', '0'))
-                if amount > 0:
-                    if action == 'deposit':
+                if action == 'deposit':
                         team_balances[team_number] += amount
                     elif action == 'withdraw':
                         team_balances[team_number] -= amount
@@ -390,8 +389,7 @@ def team_page(team_number):
         elif action == 'set_payment':
             try:
                 payment = float(request.form.get('payment', '0'))
-                if payment > 0:
-                    payment_amounts[team_number] = payment
+                payment_amounts[team_number] = payment
             except ValueError:
                 pass
 
