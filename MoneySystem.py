@@ -413,16 +413,20 @@ def pay_page(team_number):
     error = None
     if request.method == 'POST':
         if request.form['pin'] == team_pins[team_number]:
-            team_balances[team_number] -= payment_amounts[team_number]
-            log_transaction(team_number, -payment_amounts[team_number])
+            team_balances[team_number] += payment_amounts[team_number]
+            log_transaction(team_number, payment_amounts[team_number])
             payment_amounts[team_number] = 0.0
             save_data(data)
             return redirect(url_for('team_page', team_number=team_number))
         else:
             error = 'Onjuiste pincode'
 
-    return render_template_string(PAY_TEMPLATE, team_number=team_number,
-                                  payment_amount=payment_amounts[team_number], error=error)
+    return render_template_string(
+        PAY_TEMPLATE,
+        team_number=team_number,
+        payment_amount=payment_amounts[team_number],
+        error=error
+    )
 
 @app.route('/admin', methods=['GET', 'POST'])
 def admin_login():
