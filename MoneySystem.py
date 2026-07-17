@@ -377,15 +377,19 @@ def team_page(team_number):
 
     if request.method == 'POST':
         action = request.form.get('action')
+
         if action in ['deposit', 'withdraw']:
             try:
                 amount = float(request.form.get('amount', '0'))
+
                 if action == 'deposit':
-                        team_balances[team_number] += amount
-                    elif action == 'withdraw':
-                        team_balances[team_number] -= amount
+                    team_balances[team_number] += amount
+                elif action == 'withdraw':
+                    team_balances[team_number] -= amount
+
             except ValueError:
                 pass
+
         elif action == 'set_payment':
             try:
                 payment = float(request.form.get('payment', '0'))
@@ -394,6 +398,14 @@ def team_page(team_number):
                 pass
 
         save_data(data)
+
+    return render_template_string(
+        TEAM_TEMPLATE,
+        team_number=team_number,
+        balance=team_balances[team_number],
+        payment_amount=payment_amounts[team_number],
+        background_url=BACKGROUND_URL
+    )
 
     return render_template_string(
         TEAM_TEMPLATE,
