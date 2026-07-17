@@ -411,12 +411,21 @@ def pay_page(team_number):
         return redirect(url_for('index'))
 
     error = None
+
     if request.method == 'POST':
-        if request.form['pin'] == team_pins[team_number]:
-            team_balances[team_number] += payment_amounts[team_number]
-            log_transaction(team_number, payment_amounts[team_number])
+        if request.form.get('pin') == team_pins[team_number]:
+            payment = payment_amounts[team_number]
+
+            # Positief = bijschrijven, negatief = afschrijven
+            team_balances[team_number] += payment
+
+            # Sla de transactie op met hetzelfde teken
+            log_transaction(team_number, payment)
+
+            # Betaling wissen
             payment_amounts[team_number] = 0.0
             save_data(data)
+
             return redirect(url_for('team_page', team_number=team_number))
         else:
             error = 'Onjuiste pincode'
